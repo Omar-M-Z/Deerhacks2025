@@ -1,10 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
-import { SearchResponse } from '../types/index';
 import { useDebounce } from './useDebounce';
+
+interface Paper {
+  id: number;
+  title: string;
+}
+
+interface SearchResponse {
+  papers: Paper[];
+  error?: string;
+}
 
 export function useSearchPapers() {
   const [query, setQuery] = useState('');
-  const [papers, setPapers] = useState<string[]>([]);
+  const [papers, setPapers] = useState<Paper[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -12,7 +21,7 @@ export function useSearchPapers() {
   const debouncedQuery = useDebounce(query, 300);
 
   const searchPapers = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
+    if (!searchQuery) {
       setPapers([]);
       return;
     }
@@ -67,10 +76,10 @@ export function useSearchPapers() {
         setSelectedIndex(-1);
         break;
     }
-  }, [papers]);
+  }, [papers, selectedIndex]);
 
-  const handleSelectPaper = useCallback((paper: string) => {
-    setQuery(paper);
+  const handleSelectPaper = useCallback((paper: Paper) => {
+    setQuery(paper.title);
     setPapers([]);
     setSelectedIndex(-1);
   }, []);
@@ -82,6 +91,7 @@ export function useSearchPapers() {
     error,
     selectedIndex,
     setQuery,
+    setPapers,
     handleKeyDown,
     handleSelectPaper,
   };

@@ -10,17 +10,24 @@ export async function GET(req: NextRequest) {
     const query = searchParams.get('q')?.toLowerCase() || '';
 
     // Read the papers.txt file
-    // Note: process.cwd() points to the root of your Next.js project
     const filePath = path.join(process.cwd(), 'papers.txt');
     const fileContent = await fs.readFile(filePath, 'utf8');
-    const papers = fileContent.split('\n').filter(paper => paper.trim());
+
+    // Need to change the id here! Currently is const
+    const papers = fileContent
+      .split('\n')
+      .filter(paper => paper.trim())
+      .map((paper, index) => ({
+        id: index + 1,
+        title: paper
+      }));
 
     // If there's a search query, filter the papers
     if (query) {
       const searchTerms = query.split(' ');
       const filteredPapers = papers.filter(paper =>
         searchTerms.every(term =>
-          paper.toLowerCase().includes(term)
+          paper.title.toLowerCase().includes(term)
         )
       ).slice(0, 10);
 

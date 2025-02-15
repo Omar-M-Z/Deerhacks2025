@@ -3,7 +3,16 @@
 import { useSearchPapers } from '../hooks/useSearchPapers';
 import { Search } from 'lucide-react';
 
-export default function PaperSearch() {
+interface Paper {
+  id: number;
+  title: string;
+}
+
+interface PaperSearchProps {
+  onSearch: (results: Paper[]) => void;
+}
+
+export default function PaperSearch({ onSearch }: PaperSearchProps) {
   const {
     query,
     papers,
@@ -11,9 +20,27 @@ export default function PaperSearch() {
     error,
     setQuery,
     selectedIndex,
-    handleKeyDown,
-    handleSelectPaper,
+    handleKeyDown: baseHandleKeyDown,
+    handleSelectPaper: baseHandleSelectPaper,
+    setPapers,
   } = useSearchPapers();
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      if (query && papers.length > 0) {
+        onSearch(papers);
+        setPapers([]); // Clear the papers list to close autocomplete
+      } else if (!query) {
+        onSearch([]);
+      }
+    }
+    baseHandleKeyDown(e);
+  };
+
+  const handleSelectPaper = (paper: Paper) => {
+    baseHandleSelectPaper(paper);
+    onSearch([paper]);
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4">
@@ -38,7 +65,7 @@ export default function PaperSearch() {
           />
         </div>
 
-        {papers.length > 0 && (
+        {papers.length > 0 && !isLoading && (
           <ul
             id="search-suggestions"
             className="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto"
@@ -46,7 +73,7 @@ export default function PaperSearch() {
           >
             {papers.map((paper, index) => (
               <li
-                key={index}
+                key={paper.id}
                 role="option"
                 aria-selected={index === selectedIndex}
               >
@@ -55,7 +82,7 @@ export default function PaperSearch() {
                   className={`w-full p-3 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none border-b border-gray-100 last:border-none text-black
                     ${index === selectedIndex ? 'bg-gray-100' : ''}`}
                 >
-                  {paper}
+                  {paper.title}
                 </button>
               </li>
             ))}
