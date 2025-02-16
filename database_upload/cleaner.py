@@ -2,7 +2,7 @@ import pandas as pd
 import csv
 
 # File paths – adjust these as necessary
-input_csv = "~/csvdata/canadian_arxiv_papers.csv"
+input_csv = "canadian_arxiv_papers.csv"
 output_csv = "clean.csv"
 
 # Read the CSV file using pandas.

@@ -27,6 +27,7 @@ for page in pages:
     for work in page:
         paper_id = work["id"]
         paper_doi = work.get("doi")
+        count = work.get("cited_by_count")
         title = work.get("display_name") or work.get("title")
         refs = work.get("referenced_works", [])
 
@@ -50,6 +51,7 @@ for page in pages:
                 "title": title,
                 "refs": refs,
                 "canadian_universities": canadian_universities_str,
+                "count": count,
             }
         )
         arxiv_ids.add(paper_id)
@@ -59,7 +61,7 @@ print(f"Fetched {len(papers)} papers with Canadian institutions.")
 # --- Write the results into a CSV file ---
 csv_filename = "canadian_arxiv_papers.csv"
 with open(csv_filename, "w", newline="", encoding="utf-8") as csvfile:
-    fieldnames = ["id", "doi", "title", "references", "canadian_universities"]
+    fieldnames = ["id", "doi", "title", "references", "canadian_universities", "count"]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
 
@@ -72,6 +74,7 @@ with open(csv_filename, "w", newline="", encoding="utf-8") as csvfile:
                 "title": paper["title"],
                 "references": refs_str,
                 "canadian_universities": paper["canadian_universities"],
+                "count": paper["count"],
             }
         )
 
