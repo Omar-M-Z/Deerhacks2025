@@ -87,6 +87,7 @@ export function ShowPreview({
               style={{ marginTop: "10px" }}
               onClick={() => {
                 router.push(`/map/?id=${paperID}`);
+                window.location.reload();
               }}
             >
               Make Center

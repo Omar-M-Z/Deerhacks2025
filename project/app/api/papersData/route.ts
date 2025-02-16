@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import neo4j from 'neo4j-driver';
 
-// Ensure the route runs in a Node.js environment
-export const config = {
-  runtime: 'nodejs',
-};
-
 // Read required values from the environment.
 const NEO4J_URI = process.env.NEO4J_URI as string;
 const NEO4J_USER = process.env.NEO4J_USERNAME as string;
