@@ -12,7 +12,6 @@ export const Loading = () => {
     );
 };
 
-
 export default function Map() {
     const [DynamicContent, setDynamicContent] = useState<React.ComponentType<{ paperID: string | null }>>(() => Loading);
     const searchParams = useSearchParams()
