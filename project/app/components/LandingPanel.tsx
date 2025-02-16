@@ -35,8 +35,11 @@ export default function LandingPanel() {
       ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
       <div className="p-8 flex flex-col h-full">
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-800 animate-fade-in">
-          Research Network Explorer
+          PaperOrbit
         </h1>
+        <h2 className="text-2xl font-bold text-center mb-8 text-gray-800 animate-fade-in">
+          Naviagate the cosmic network of research
+        </h2>
 
         <div className="relative z-10">
           <PaperSearch
