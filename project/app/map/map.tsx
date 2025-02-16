@@ -8,23 +8,18 @@ import { ShowPreview } from './previewPaper';
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation';
 
-function loadMapNodes(graph: Graph, paperID: string, depth: number) {
+async function loadMapNodes(graph: Graph, paperID: string, depth: number) {
+  // TODO: finish this function for loading nodes and edges
 
-  const fetchPapers = async (paperID: string, depth: number) => {
-    try {
-      const response = await fetch(`/api/papersData?=${paperID}&depth=${depth}`);
-      const data = await response.json();
+  const response = await fetch(`/api/papersData?=${paperID}&depth=${depth}`);
+  const data = await response.json();
 
-      const centerNode = data.centerNode
-      const nodes = data.nodes
-      const edges = data.relations
+  const centerNode = data.centerNode
+  const nodes = data.nodes
+  const edges = data.relations
 
-    } catch (error) {
-      console.error('Failed to fetch featured papers:', error);
-    }
-  };
 
-  fetchPapers(paperID, depth)
+
 
 
 
@@ -82,30 +77,36 @@ const GraphEvents: React.FC = () => {
   );
 }
 
-// Component that load the graph
-export const LoadGraph = () => {
+export const LoadGraph = ({ paperID }: { paperID: string }) => {
   const loadGraph = useLoadGraph();
   useEffect(() => {
-    const graph = new Graph();
-    loadMapNodes(graph);
-    loadGraph(graph);
-  }, [loadGraph]);
+    const initializeGraph = async () => {
+      const graph = new Graph();
+      await loadMapNodes(graph, paperID, 1); // Ensure it completes before proceeding
+      loadGraph(graph);
+    };
 
+    initializeGraph();
+  }, [loadGraph]);
   return null;
 };
 
 const LayoutControl: React.FC = () => {
-  const { start } = useWorkerLayoutForce();
+  const { start } = useWorkerLayoutForce({
+    settings: {
+      repulsion: 0.00001,
+      attraction: 0.0004
+    }
+  });
+
   useEffect(() => {
     start();
   }, [start]);
-
   return null;
 }
 
 // Component that display the graph
 export const DisplayGraph = ({ paperID }: { paperID: string }) => {
-  // TODO: create a function to get paper info from the ID
   const router = useRouter();
   return (
     <main style={{ position: 'relative' }}>
@@ -119,10 +120,10 @@ export const DisplayGraph = ({ paperID }: { paperID: string }) => {
         <h1 className="w-full font-size-40">{paperID}</h1>
       </div>
       <SigmaContainer style={{ height: "100vh", width: "100vw" }} settings={{ allowInvalidContainer: true }}>
-        <LoadGraph />
+        <LoadGraph paperID={paperID} />
         <GraphEvents />
         <LayoutControl />
-      </SigmaContainer>
+      </ SigmaContainer >
     </main>
   );
 };

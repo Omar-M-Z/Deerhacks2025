@@ -72,7 +72,7 @@ export function ShowPreview({ paperID, showingDialog, onShowingDialogChange }: S
                         onClick={() => {
                             router.push(`/map/?id=${paperDetails.id}`)
                         }}>
-                            Make Center {/* TODO: make this push user to link of that node*/}
+                            Make Center {/*TODO: make sure this button works*/}
                         </Button>
                         <ResearchPaperSheet paperId="asdf"isOpen={sidebarOpen} onOpenChange={setSideBarOpen}></ResearchPaperSheet>
                     </div>
