@@ -3,7 +3,7 @@ import {
   Popover,
   PopoverContent,
 } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
+import { useEffect, useState, CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
 import { PopoverAnchor } from "@radix-ui/react-popover";
 import { useRouter } from "next/navigation";
@@ -52,7 +52,7 @@ export function ShowPreview({
     };
   }, [showingDialog]);
 
-  const style = {
+  const style: CSSProperties = {
     position: "absolute",
     left: `${mousePosition.x}px`,
     top: `${mousePosition.y}px`,
