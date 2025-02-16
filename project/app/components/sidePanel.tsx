@@ -1,30 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { Sheet, SheetContent } from "@/components/ui/sheet"; // Adjust the import paths as needed
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
-// Define the type for the research paper data returned by OpenAlex.
-// Adjust the interface as needed based on the actual API response.
 interface OpenAlexPaper {
   display_name?: string;
   doi?: string;
   publication_year?: number;
   type?: string;
-  abstract_inverted_index?: Record<string, any>;
+  abstract_inverted_index?: Record<string, number[]>;
 }
 
-// Props for the ResearchPaperSheet component.
-interface ResearchPaperSheetProps {
-  paperId: string;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+/**
+ * Reconstructs an abstract string from the inverted index provided by OpenAlex.
+ * @param invertedIndex A record where keys are words and values are arrays of positions.
+ * @returns The reconstructed abstract string.
+ */
+function reconstructAbstract(invertedIndex: Record<string, number[]>): string {
+  // Determine the maximum index in the inverted index.
+  let maxIndex = 0;
+  Object.values(invertedIndex).forEach((positions) => {
+    positions.forEach((pos) => {
+      if (pos > maxIndex) maxIndex = pos;
+    });
+  });
+
+  // Initialize an array with empty strings to hold the words.
+  const words = new Array(maxIndex + 1).fill("");
+
+  // Place each word at its respective positions.
+  Object.entries(invertedIndex).forEach(([word, positions]) => {
+    positions.forEach((pos) => {
+      words[pos] = word;
+    });
+  });
+
+  // Join the words to form the full abstract.
+  return words.join(" ");
 }
 
-export const ResearchPaperSheet: React.FC<ResearchPaperSheetProps> = ({
+export function ResearchPaperSheet({
   paperId,
   isOpen,
   onOpenChange,
-}) => {
+}: {
+  paperId: string;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const [paperData, setPaperData] = useState<OpenAlexPaper | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +69,6 @@ export const ResearchPaperSheet: React.FC<ResearchPaperSheetProps> = ({
           setLoading(false);
         }
       };
-
       fetchData();
     }
   }, [paperId, isOpen]);
@@ -75,13 +95,7 @@ export const ResearchPaperSheet: React.FC<ResearchPaperSheetProps> = ({
             <div className="mt-4">
               <strong>Abstract:</strong>
               {paperData.abstract_inverted_index ? (
-                <p>
-                  {/* 
-                    The abstract is returned as an inverted index.
-                    You might implement a function to reconstruct the actual abstract text.
-                  */}
-                  [Abstract available. Processing inverted index required.]
-                </p>
+                <p>{reconstructAbstract(paperData.abstract_inverted_index)}</p>
               ) : (
                 <p>No abstract available.</p>
               )}
@@ -91,4 +105,4 @@ export const ResearchPaperSheet: React.FC<ResearchPaperSheetProps> = ({
       </SheetContent>
     </Sheet>
   );
-};
+}
