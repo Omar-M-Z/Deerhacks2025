@@ -1,10 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import neo4j from 'neo4j-driver';
 
-const NEO4J_URI = 'bolt://localhost:7687';
-const NEO4J_USER = 'neo4j';
-const NEO4J_PASSWORD = 'your_password';
+// Ensure the route runs in a Node.js environment
+export const config = {
+  runtime: 'nodejs',
+};
 
+// Read required values from the environment.
+const NEO4J_URI = process.env.NEO4J_URI as string;
+const NEO4J_USER = process.env.NEO4J_USERNAME as string;
+const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD as string;
+
+if (!NEO4J_URI) {
+  throw new Error('NEO4J_URI environment variable is not set');
+}
+if (!NEO4J_USER) {
+  throw new Error('NEO4J_USERNAME environment variable is not set');
+}
+if (!NEO4J_PASSWORD) {
+  throw new Error('NEO4J_PASSWORD environment variable is not set');
+}
+
+// Initialize the Neo4j driver
 const driver = neo4j.driver(
   NEO4J_URI,
   neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
