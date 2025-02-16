@@ -52,7 +52,6 @@ export function ShowPreview({
     };
   }, [showingDialog]);
 
-<<<<<<< HEAD
   const style = {
     position: "absolute",
     left: `${mousePosition.x}px`,
@@ -102,39 +101,4 @@ export function ShowPreview({
       </Popover>
     </main>
   );
-=======
-    return (
-        <main>
-            <Popover open={showingDialog} onOpenChange={onShowingDialogChange}>
-                <PopoverAnchor style={style}></PopoverAnchor>
-                <PopoverContent>
-                    <div className="flex flex-col">
-                        <strong>{truncateTitle(paperTitle)}</strong>
-                        <div>
-                            <strong>Link:</strong> <a href={paperLink} target="_blank" rel="noopener noreferrer">{paperLink}</a>
-                        </div>
-                        <Button 
-                            onClick={() => {
-                                setSideBarOpen(true);
-                            }}
-                            style={{ marginTop: "10px" }}
-                        >
-                            Read More
-                        </Button>
-                        <Button 
-                            style={{ marginTop: "10px" }}
-                            onClick={() => {
-                                router.push(`/map?id=${paperID}`);
-                                window.location.reload();
-                            }}
-                        >
-                            Make Center {/*TODO: make sure this button works*/}
-                        </Button>
-                        <ResearchPaperSheet paperId={paperID} isOpen={sidebarOpen} onOpenChange={setSideBarOpen}></ResearchPaperSheet>
-                    </div>
-                </PopoverContent>
-            </Popover>
-        </main>
-    );
->>>>>>> 6ef5d44 (changes)
 }
