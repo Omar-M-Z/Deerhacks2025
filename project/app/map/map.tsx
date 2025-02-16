@@ -8,15 +8,15 @@ import { ShowPreview } from './previewPaper';
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation';
 
-function loadMapNodes(graph: Graph) {
+async function loadMapNodes(graph: Graph, paperID: string) {
     // TODO: finish this function for loading nodes and edges
-    graph.addNode("1", { x: 0, y: 0, size: 15, label: "My first node", color: "#FA4F40" });
-    graph.addNode("2", { x: 1, y: 0, size: 15, label: "My first node", color: "#FA4F40" });
-    graph.addNode("3", { x: 0, y: 1, size: 15, label: "My first node", color: "#FA4F40" });
-    graph.addNode("4", { x: 6, y: 1, size: 15, label: "My first node", color: "#FA4F40" });
-    graph.addNode("5", { x: 7, y: 1, size: 15, label: "My first node", color: "#FA4F40" });
-    graph.addNode("6", { x: 3, y: 1, size: 15, label: "My first node", color: "#FA4F40" });
-    graph.addNode("7", { x: 3, y: 0, size: 15, label: "My first node", color: "#FA4F40" });
+    graph.addNode("1", { x: 1, y: 0, size: 45, label: "My first node", color: "#FA4F40" });
+    graph.addNode("2", { x: 2, y: 1, size: 45, label: "My first node", color: "#FA4F40" });
+    graph.addNode("3", { x: 3, y: 2, size: 45, label: "My first node", color: "#FA4F40" });
+    graph.addNode("4", { x: 3, y: 4, size: 45, label: "My first node", color: "#FA4F40" });
+    graph.addNode("5", { x: 3, y: 1, size: 45, label: "My first node", color: "#FA4F40" });
+    graph.addNode("6", { x: 1, y: 0, size: 45, label: "My first node", color: "#FA4F40" });
+    graph.addNode("7", { x: 3, y: 0, size: 45, label: "My first node", color: "#FA4F40" });
 
     graph.addEdgeWithKey('rel1', '1', '2', { label: 'REL_1' });
     graph.addEdgeWithKey('rel2', '1', '3', { label: 'REL_1' });
@@ -64,19 +64,27 @@ const GraphEvents: React.FC = () => {
 }
 
 // Component that load the graph
-export const LoadGraph = () => {
+export const LoadGraph = ({paperID}: {paperID: string}) => {
     const loadGraph = useLoadGraph();
     useEffect(() => {
-        const graph = new Graph();
-        loadMapNodes(graph);
-        loadGraph(graph);
+        const initializeGraph = async () => {
+            const graph = new Graph();
+            await loadMapNodes(graph, paperID); // Ensure it completes before proceeding
+            loadGraph(graph);
+        };
+
+        initializeGraph();
     }, [loadGraph]);
 
     return null;
 };
 
 const LayoutControl: React.FC = () => {
-    const { start } = useWorkerLayoutForce();
+    const { start } = useWorkerLayoutForce({settings: {
+        repulsion: 0.00001,
+        attraction: 0.0004
+      }});
+
     useEffect(() => {
         start();
     }, [start]);
@@ -86,7 +94,6 @@ const LayoutControl: React.FC = () => {
 
 // Component that display the graph
 export const DisplayGraph = ({ paperID }: { paperID: string }) => {
-    // TODO: create a function to get paper info from the ID
     const router = useRouter();
     return (
         <main style={{ position: 'relative'}}>
@@ -100,7 +107,7 @@ export const DisplayGraph = ({ paperID }: { paperID: string }) => {
                 <h1 className="w-full font-size-40">{paperID}</h1>
             </div>
             <SigmaContainer style={{height: "100vh", width: "100vw"}} settings={{allowInvalidContainer: true}}>
-                <LoadGraph />
+                <LoadGraph paperID={paperID}/>
                 <GraphEvents />
                 <LayoutControl />
             </SigmaContainer>
