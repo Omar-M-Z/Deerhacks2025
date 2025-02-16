@@ -8,9 +8,6 @@ import { ShowPreview } from './previewPaper';
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation';
 
-const sigmaStyle = { height: "100vh", width: "100vw"};
-
-
 function loadMapNodes(graph: Graph) {
     // TODO: finish this function for loading nodes and edges
     graph.addNode("1", { x: 0, y: 0, size: 15, label: "My first node", color: "#FA4F40" });
@@ -92,7 +89,6 @@ export const DisplayGraph = ({ paperID }: { paperID: string }) => {
     // TODO: create a function to get paper info from the ID
     const router = useRouter();
     return (
-        // TODO: on press, the button should take the user back to the home page
         <main style={{ position: 'relative'}}>
             <div className="flex flex-row" style={{ margin: "10px", textAlign: "center", alignItems: "center" }}>
                 <Button
