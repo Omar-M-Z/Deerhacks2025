@@ -5,6 +5,7 @@ import {
   SheetHeader,
   SheetTitle
 } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface OpenAlexPaper {
   display_name?: string;
@@ -92,83 +93,90 @@ export function ResearchPaperSheet({
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      {/* Adjust width as needed */}
       <SheetContent className="bg-white text-black p-4" style={{ maxWidth: '30vw' }}>
-        <SheetHeader>
-          <SheetTitle className="text-2xl">
-            {paperData?.display_name || "Untitled Paper"}
-          </SheetTitle>
-        </SheetHeader>
-        {loading && <p>Loading paper data...</p>}
-        {error && <p className="text-red-500">Error: {error}</p>}
-        {paperData && (
-          <div>
-            {paperData.doi ? (
-              <p>
-                <strong>DOI:</strong>{" "}
-                <a
-                  href={`https://doi.org/${paperData.doi}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
-                >
-                  {paperData.doi}
-                </a>
-              </p>
-            ) : (
-              <p>
-                <strong>DOI:</strong> N/A
-              </p>
-            )}
-            <p>
-              <strong>Publication Year:</strong> {paperData.publication_year || "N/A"}
-            </p>
-            <p>
-              <strong>Type:</strong> {paperData.type || "N/A"}
-            </p>
-            {/* Authors */}
-            {paperData.authorships && paperData.authorships.length > 0 && (
-              <div className="mt-2">
-                <strong>Authors:</strong>{" "}
-                {paperData.authorships
-                  .map((auth) => auth.author.display_name)
-                  .join(", ")}
-              </div>
-            )}
-            {/* Keywords */}
-            {paperData.keywords && paperData.keywords.length > 0 && (
-              <div className="mt-2">
-                <strong>Keywords:</strong> {paperData.keywords.join(", ")}
-              </div>
-            )}
-            {/* Concepts */}
-            {paperData.concepts && paperData.concepts.length > 0 && (
-              <div className="mt-2">
-                <strong>Concepts:</strong>{" "}
-                {paperData.concepts
-                  .map((concept) => concept.display_name)
-                  .join(", ")}
-              </div>
-            )}
-            {/* Topics */}
-            {paperData.topics && paperData.topics.length > 0 && (
-              <div className="mt-2">
-                <strong>Topics:</strong>{" "}
-                {paperData.topics
-                  .map((topic) => topic.display_name)
-                  .join(", ")}
-              </div>
-            )}
-            <div className="mt-4">
-              <strong>Abstract:</strong>
-              {paperData.abstract_inverted_index ? (
-                <p>{reconstructAbstract(paperData.abstract_inverted_index)}</p>
+        <ScrollArea className="h-[90vh]">
+          <SheetHeader>
+            <SheetTitle className="text-2xl">
+              {/* Render title with MathML using dangerouslySetInnerHTML */}
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: paperData?.display_name || "Untitled Paper"
+                }}
+              />
+            </SheetTitle>
+          </SheetHeader>
+          {loading && <p>Loading paper data...</p>}
+          {error && <p className="text-red-500">Error: {error}</p>}
+          {paperData && (
+            <div>
+              {paperData.doi ? (
+                <p>
+                  <strong>DOI:</strong>{" "}
+                  <a
+                    href={`https://doi.org/${paperData.doi}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    {paperData.doi}
+                  </a>
+                </p>
               ) : (
-                <p>No abstract available.</p>
+                <p>
+                  <strong>DOI:</strong> N/A
+                </p>
               )}
+              <p>
+                <strong>Publication Year:</strong> {paperData.publication_year || "N/A"}
+              </p>
+              <p>
+                <strong>Type:</strong> {paperData.type || "N/A"}
+              </p>
+              {/* Authors */}
+              {paperData.authorships && paperData.authorships.length > 0 && (
+                <div className="mt-2">
+                  <strong>Authors:</strong>{" "}
+                  {paperData.authorships
+                    .map((auth) => auth.author.display_name)
+                    .join(", ")}
+                </div>
+              )}
+              {/* Keywords */}
+              {paperData.keywords && paperData.keywords.length > 0 && (
+                <div className="mt-2">
+                  <strong>Keywords:</strong>{" "}
+                  {paperData.keywords.join(", ")}
+                </div>
+              )}
+              {/* Concepts */}
+              {paperData.concepts && paperData.concepts.length > 0 && (
+                <div className="mt-2">
+                  <strong>Concepts:</strong>{" "}
+                  {paperData.concepts
+                    .map((concept) => concept.display_name)
+                    .join(", ")}
+                </div>
+              )}
+              {/* Topics */}
+              {paperData.topics && paperData.topics.length > 0 && (
+                <div className="mt-2">
+                  <strong>Topics:</strong>{" "}
+                  {paperData.topics
+                    .map((topic) => topic.display_name)
+                    .join(", ")}
+                </div>
+              )}
+              <div className="mt-4">
+                <strong>Abstract:</strong>
+                {paperData.abstract_inverted_index ? (
+                  <p>{reconstructAbstract(paperData.abstract_inverted_index)}</p>
+                ) : (
+                  <p>No abstract available.</p>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );

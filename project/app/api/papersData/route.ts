@@ -3,7 +3,7 @@ import neo4j from 'neo4j-driver';
 
 const NEO4J_URI = 'bolt://localhost:7687';
 const NEO4J_USER = 'neo4j';
-const NEO4J_PASSWORD = 'dublin-poetic-texas-trust-libra-1811';
+const NEO4J_PASSWORD = 'your_password';
 
 const driver = neo4j.driver(
   NEO4J_URI,
