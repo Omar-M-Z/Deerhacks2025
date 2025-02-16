@@ -7,9 +7,7 @@ import { useWorkerLayoutForce } from "@react-sigma/layout-force";
 import { ShowPreview } from './previewPaper';
 import { Button } from "@/components/ui/button"
 
-
 const sigmaStyle = { height: "100vh", width: "100vw" };
-
 
 
 function loadMapNodes(graph: Graph) {
@@ -30,8 +28,20 @@ function loadMapNodes(graph: Graph) {
 }
 
 const GraphEvents: React.FC = () => {
-  const registerEvents = useRegisterEvents();
-  const [showDialogBox, setShowDialogBox] = useState(false)
+    const registerEvents = useRegisterEvents();
+    const [showDialogBox, setShowDialogBox] = useState(false)
+    const [selectedNode, setSelectedNode] = useState(null)
+    
+    useEffect(() => {
+        registerEvents({
+            clickNode: (event) => {
+                event.preventSigmaDefault()
+                setShowDialogBox(true);
+                console.log(event.node)
+            },
+          }
+        );
+    }, [registerEvents, showDialogBox])
 
   useEffect(() => {
     registerEvents({
