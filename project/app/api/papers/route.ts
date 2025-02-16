@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-// This is the handler for GET /api/papers
 export async function GET(req: NextRequest) {
   try {
     // Get search query from URL
@@ -13,14 +12,17 @@ export async function GET(req: NextRequest) {
     const filePath = path.join(process.cwd(), 'papers.txt');
     const fileContent = await fs.readFile(filePath, 'utf8');
 
-    // Need to change the id here! Currently is const
+    // Parse the papers with their IDs
     const papers = fileContent
       .split('\n')
       .filter(paper => paper.trim())
-      .map((paper, index) => ({
-        id: index + 1,
-        title: paper
-      }));
+      .map(paper => {
+        const [title, id] = paper.split('#');
+        return {
+          id: id,
+          title: title.trim()
+        };
+      });
 
     // If there's a search query, filter the papers
     if (query) {
@@ -30,7 +32,6 @@ export async function GET(req: NextRequest) {
           paper.title.toLowerCase().includes(term)
         )
       ).slice(0, 10);
-
       return NextResponse.json({ papers: filteredPapers });
     }
 
