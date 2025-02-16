@@ -74,7 +74,7 @@ export function ShowPreview({ paperID, showingDialog, onShowingDialogChange }: S
                         }}>
                             Make Center {/*TODO: make sure this button works*/}
                         </Button>
-                        <ResearchPaperSheet paperId="asdf"isOpen={sidebarOpen} onOpenChange={setSideBarOpen}></ResearchPaperSheet>
+                        <ResearchPaperSheet paperId={paperID} isOpen={sidebarOpen} onOpenChange={setSideBarOpen}></ResearchPaperSheet>
                     </div>
                 </PopoverContent>
             </Popover>
