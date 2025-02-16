@@ -21,17 +21,25 @@ interface ShowPreviewProps {
     paperID: string; // Define the paperID prop if needed
     showingDialog: boolean
     onShowingDialogChange: any
+    paperLink: string,
+    paperTitle: string
 }
 
-export function ShowPreview({ paperID, showingDialog, onShowingDialogChange }: ShowPreviewProps) {
+export function ShowPreview({ paperID, showingDialog, onShowingDialogChange, paperLink, paperTitle }: ShowPreviewProps) {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [sidebarOpen, setSideBarOpen] = useState(false);
     const router = useRouter();
 
-    const paperDetails = getPaperDetails(paperID);
+    // Function to truncate the title after 50 characters
+    const truncateTitle = (title: any, maxLength: number = 50) => {
+        const strTitle = String(title);
+        console.log(strTitle.length)
+        return strTitle.length > maxLength ? strTitle.slice(0, maxLength) + "..." : strTitle;
+      };
 
     useEffect(() => {
-        const handleMouseMove = (e: any) => {
+        paperTitle = truncateTitle(paperTitle)
+        const handleMouseMove = (e: MouseEvent) => {
             setMousePosition({ x: e.clientX, y: e.clientY });
         };
         window.addEventListener('mousemove', handleMouseMove);
@@ -52,26 +60,25 @@ export function ShowPreview({ paperID, showingDialog, onShowingDialogChange }: S
                 <PopoverAnchor style={style}></PopoverAnchor>
                 <PopoverContent>
                     <div className="flex flex-col">
-                        <strong>{paperDetails.title}</strong>
+                        <strong>{truncateTitle(paperTitle)}</strong>
                         <div>
-                            <strong>Link:</strong> <a href={paperDetails.link} target="_blank" rel="noopener noreferrer">{paperDetails.link}</a>
-                        </div>
-                        <div>
-                            <strong>Cited By:</strong> {paperDetails.citedBy}
+                            <strong>Link:</strong> <a href={paperLink} target="_blank" rel="noopener noreferrer">{paperLink}</a>
                         </div>
                         <Button 
-                        onClick={() => {
-                            setSideBarOpen(true)
-                        }}
-                        style={{ marginTop: "10px" }}
+                            onClick={() => {
+                                setSideBarOpen(true);
+                            }}
+                            style={{ marginTop: "10px" }}
                         >
                             Read More
                         </Button>
                         <Button 
-                        style={{ marginTop: "10px" }}
-                        onClick={() => {
-                            router.push(`/map/?id=${paperDetails.id}`)
-                        }}>
+                            style={{ marginTop: "10px" }}
+                            onClick={() => {
+                                console.log("asdfasdf");
+                                router.push(`/map/?id=${paperID}`);
+                            }}
+                        >
                             Make Center {/*TODO: make sure this button works*/}
                         </Button>
                         <ResearchPaperSheet paperId={paperID} isOpen={sidebarOpen} onOpenChange={setSideBarOpen}></ResearchPaperSheet>

@@ -10,7 +10,17 @@ import { useRouter } from 'next/navigation';
 
 function getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+}
+
+// Function to truncate the title after 50 characters
+const truncateTitle = (title: any, maxLength: number = 50) => {
+    const strTitle = String(title);
+    console.log(strTitle.length)
+    return strTitle.length > maxLength ? strTitle.slice(0, maxLength) + "..." : strTitle;
+    };
+
+let paperLinks: {[key: string]: string } = {};
+let paperTitles: {[key: string]: string } = {};
 
 async function loadMapNodes(graph: Graph, paperID: string, depth: number) {
     // TODO: finish this function for loading nodes and edges
@@ -25,7 +35,9 @@ async function loadMapNodes(graph: Graph, paperID: string, depth: number) {
     //graph.addNode(centerNode.id, { x: 0, y: 0, size: 15, label: centerNode.title, color: "#FA4F40"})
 
     for (const node of nodes) {
-        graph.addNode(node.id, { x: getRandomNumber(0, 25), y: getRandomNumber(0, 25), size: 15, label: node.title, color: "#FA4F40" });
+        graph.addNode(node.id, { x: getRandomNumber(0, 25), y: getRandomNumber(0, 25), size: 15, label: truncateTitle(node.title), color: "#FA4F40" });
+        paperLinks[node.id] = node.doi
+        paperTitles[node.id] = node.title
     }
 
 
@@ -44,19 +56,7 @@ const GraphEvents: React.FC = () => {
             clickNode: (event) => {
                 event.preventSigmaDefault()
                 setShowDialogBox(true);
-                console.log(event.node)
                 setSelectedPaperID(event.node)
-                console.log("asdfasdfas")
-            },
-        }
-        );
-    }, [registerEvents, showDialogBox])
-
-    useEffect(() => {
-        registerEvents({
-            clickNode: (event) => {
-                event.preventSigmaDefault()
-                setShowDialogBox(true);
             },
         }
         );
@@ -66,8 +66,10 @@ const GraphEvents: React.FC = () => {
         <div>
             <ShowPreview
                 paperID={selectedPaperID}
+                paperLink={paperLinks[selectedPaperID]}
                 showingDialog={showDialogBox}
                 onShowingDialogChange={setShowDialogBox}
+                paperTitle={paperTitles[selectedPaperID]}
             ></ShowPreview>
         </div>
     );
