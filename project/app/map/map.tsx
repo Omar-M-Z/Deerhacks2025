@@ -7,18 +7,22 @@ import { useWorkerLayoutForce } from "@react-sigma/layout-force";
 import { ShowPreview } from './previewPaper';
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation';
+import { blendColors } from "./colorManager";
 
 function getRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const mapToRange = (num: number, minRange = 25, maxRange = 60) => {
-    // If you want to map the number to a value between minRange and maxRange, 
-    // you can apply a simple scaling formula based on the original range.
-    
+type UniversityColorMap = {
+    [university: string]: string;
+  };
+
+const mapToRange = (num: number, minRange = 15, maxRange = 30, numNodes: number) => {
+    if (numNodes > 50){
+        return 15;
+    }
     const min = Math.min(num, maxRange);
     const max = Math.max(num, minRange);
-    
     // Ensure the number is within the range
     return Math.min(Math.max(num, minRange), maxRange);
 };
@@ -45,16 +49,28 @@ async function loadMapNodes(graph: Graph, paperID: string, depth: number) {
 
   //graph.addNode(centerNode.id, { x: 0, y: 0, size: 15, label: centerNode.title, color: "#FA4F40"})
 
+    var firstSet = false
   for (const node of nodes) {
     const citations = node.count
-    graph.addNode(node.id, { x: getRandomNumber(0, 25), y: getRandomNumber(0, 25), size: mapToRange(citations), label: truncateTitle(node.title), color: "#FA4F40" });
-    paperLinks[node.id] = node.doi
-    paperTitles[node.id] = node.title
+    try{
+        if (firstSet){
+            graph.addNode(node.id, { x: getRandomNumber(0, 25), y: getRandomNumber(0, 25), size: mapToRange(citations, nodes.length), label: truncateTitle(node.title), color: blendColors(node.unis) });
+        } else {
+            graph.addNode(node.id, { x: getRandomNumber(0, 25), y: getRandomNumber(0, 25), size: 60, label: truncateTitle(node.title), color: blendColors(node.unis) });
+            firstSet = true;
+        }
+        paperLinks[node.id] = node.doi
+        paperTitles[node.id] = node.title
+    } catch (error){
+        
+    }
   }
 
 
   for (let i = 0; i < edges.length; i++) {
-    graph.addEdgeWithKey(i, edges[i][0], edges[i][1], { label: 'REL_1' });
+    if (!graph.hasEdge(edges[i][0], edges[i][1])) {
+        graph.addEdgeWithKey(i, edges[i][0], edges[i][1], { label: 'REL_1' });
+    }
   }
 }
 
@@ -105,7 +121,7 @@ export const LoadGraph = ({ paperID, setHeading }: { paperID: string, setHeading
 const LayoutControl: React.FC = () => {
   const { start } = useWorkerLayoutForce({
     settings: {
-      repulsion: 0.00001,
+        repulsion: 0.00001,
       attraction: 0.0004
     }
   });
