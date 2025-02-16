@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button"
 
 const sigmaStyle = { height: "100vh", width: "100vw" };
 
+
+
 function loadMapNodes(graph: Graph) {
     graph.addNode("1", { x: 0, y: 0, size: 15, label: "My first node", color: "#FA4F40" });
     graph.addNode("2", { x: 1, y: 0, size: 15, label: "My first node", color: "#FA4F40" });
@@ -36,8 +38,9 @@ const GraphEvents: React.FC = () => {
             clickNode: (event) => {
                 event.preventSigmaDefault()
                 setShowDialogBox(true);
-            }
-          });
+            },
+          }
+        );
     }, [registerEvents, showDialogBox])
 
     return (

@@ -4,9 +4,15 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from "@/components/ui/popover"
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { PopoverAnchor } from "@radix-ui/react-popover";
 
 const getPaperDetails = (paperID: string) => {
     const title = "asdf";
@@ -21,16 +27,32 @@ interface ShowPreviewProps {
     onShowingDialogChange: any
 }
 
-export function ShowPreview({ paperID, showingDialog, onShowingDialogChange }: ShowPreviewProps) {
-    const [open, setOpen] = useState(false);
-
-    // Automatically open the dialog on mount
-    useEffect(() => {
-        setOpen(true); // Set open to true when the component mounts
-    }, []);
-    
+export function ShowPreview({ paperID, showingDialog, onShowingDialogChange }: ShowPreviewProps) {    
     const paperDetails = getPaperDetails(paperID);
 
+    return (
+        <main>
+            <Popover open={showingDialog} onOpenChange={onShowingDialogChange}>
+                <PopoverAnchor></PopoverAnchor>
+                <PopoverContent>
+                    <div className="flex flex-col">
+                        <strong>{paperDetails.title}</strong>
+                        <div>
+                            <strong>Link:</strong> <a href={paperDetails.link} target="_blank" rel="noopener noreferrer">{paperDetails.link}</a>
+                        </div>
+                        <div>
+                            <strong>Cited By:</strong> {paperDetails.citedBy}
+                        </div>
+                        <Button style={{marginTop: "10px"}}>
+                            Make Center
+                        </Button>
+                    </div>
+                </PopoverContent>
+            </Popover>
+        </main>
+    );
+
+    /*
     return (
         <main>
             <Dialog open={showingDialog} onOpenChange={onShowingDialogChange}>
@@ -42,8 +64,11 @@ export function ShowPreview({ paperID, showingDialog, onShowingDialogChange }: S
                             <strong>Cited By:</strong> {paperDetails.citedBy}
                         </DialogDescription>
                     </DialogHeader>
+                    <Button>
+                        Make Center
+                    </Button>
                 </DialogContent>
             </Dialog>
         </main>
-    );
+    );*/
 }
