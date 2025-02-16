@@ -37,7 +37,6 @@ export function ShowPreview({ paperID, showingDialog, onShowingDialogChange }: S
         };
     }, [showingDialog]);
 
-    // Define the style to position PopoverAnchor at mouse position
     const style = {
         position: 'absolute',
         left: `${mousePosition.x}px`,
