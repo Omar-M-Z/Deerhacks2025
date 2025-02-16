@@ -22,7 +22,9 @@ export function PaperCard({ paper, featured = false }: { paper: Paper; featured?
         <div className="flex items-start gap-4">
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 group-hover:text-blue-600 transition-colors">
-              {paper.title}
+              <span
+                dangerouslySetInnerHTML={{ __html: paper.title }}
+              />
             </h3>
           </div>
           <Network className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />

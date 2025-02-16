@@ -145,7 +145,9 @@ export function ResearchPaperSheet({
               {paperData.keywords && paperData.keywords.length > 0 && (
                 <div className="mt-2">
                   <strong>Keywords:</strong>{" "}
-                  {paperData.keywords.join(", ")}
+                  {paperData.keywords
+                    .map((keyword) => keyword.display_name)
+                    .join(", ")}
                 </div>
               )}
               {/* Concepts */}
